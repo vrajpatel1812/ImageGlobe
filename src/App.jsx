@@ -1,9 +1,14 @@
 import "./App.css";
+import ImageList from "./component/imageList/ImageList";
+import Nav from "./component/Nav";
+import Upload from "./component/upload/Upload";
 
 function App() {
   return (
     <>
-      <h1>App</h1>
+      <Nav />
+      <Upload />
+      <ImageList />
     </>
   );
 }
