@@ -1,5 +1,11 @@
+import Form from "./Form";
+
 const Upload = () => {
-  return <div>Upload</div>;
+  return (
+    <>
+      <Form />
+    </>
+  );
 };
 
 export default Upload;

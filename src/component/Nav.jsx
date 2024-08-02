@@ -14,7 +14,11 @@ import { Lock } from "@mui/icons-material";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState({
+    email: "test@gmail.com",
+    displayName: "John",
+    photoURL: "",
+  });
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -38,7 +42,13 @@ const Nav = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              <Avatar
+                sx={{ width: 32, height: 32 }}
+                src={currentUser?.photoURL}
+              >
+                {currentUser?.displayName?.charAt(0)?.toUpperCase() ||
+                  currentUser?.email?.charAt(0).toUpperCase()}
+              </Avatar>
             </IconButton>
           </Tooltip>
         )}
