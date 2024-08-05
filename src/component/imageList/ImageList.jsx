@@ -1,6 +1,11 @@
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import ModalImage from "react-modal-image";
+import LightGallery from "lightgallery/react";
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-fullscreen.css";
+import lgZoom from "lightgallery/plugins/zoom";
+import lgFullscreen from "lightgallery/plugins/fullscreen";
 
 const srcset = (image, size, rows = 1, cols = 1) => {
   return {
@@ -13,23 +18,52 @@ const srcset = (image, size, rows = 1, cols = 1) => {
 
 export default function ImageLists() {
   return (
-    <ImageList variant="quilted" cols={4} rowHeight={200}>
-      {itemData.map((item, index) => (
-        <ImageListItem
-          key={item.img}
-          cols={
-            pattern[index - Math.floor(index / pattern.length) * pattern.length]
-              .cols
-          }
-          rows={
-            pattern[index - Math.floor(index / pattern.length) * pattern.length]
-              .rows
-          }
-        >
-          <ModalImage small={item.img} large={item.img} alt="" />
-        </ImageListItem>
-      ))}
-    </ImageList>
+    <div style={{ width: "100%", margin: "0 auto" }}>
+      <ImageList
+        variant="quilted"
+        cols={4}
+        rowHeight={200}
+        gap={2}
+        sx={{ overflow: "hidden" }}
+      >
+        {itemData.map((item, index) => {
+          const { rows, cols } = pattern[index % pattern.length];
+          return (
+            <ImageListItem
+              key={item.img}
+              cols={cols}
+              rows={rows}
+              sx={{
+                overflow: "hidden",
+                display: "block",
+              }}
+            >
+              <LightGallery
+                speed={500}
+                plugins={[lgZoom, lgFullscreen]}
+                elementClassNames="custom-class"
+                counter={false}
+                pager={false}
+              >
+                <a href={item.img} data-sub-html={`<h4>${item.title}</h4>`}>
+                  <img
+                    {...srcset(item.img, 200, rows, cols)}
+                    alt={item.title}
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                </a>
+              </LightGallery>
+            </ImageListItem>
+          );
+        })}
+      </ImageList>
+    </div>
   );
 }
 
@@ -57,7 +91,6 @@ const itemData = [
   {
     img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
     title: "Honey",
-    author: "@arwinneil",
   },
   {
     img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
@@ -86,36 +119,12 @@ const itemData = [
 ];
 
 const pattern = [
-  {
-    rows: 2,
-    cols: 2,
-  },
-  {
-    rows: 1,
-    cols: 1,
-  },
-  {
-    rows: 1,
-    cols: 1,
-  },
-  {
-    rows: 1,
-    cols: 2,
-  },
-  {
-    rows: 1,
-    cols: 1,
-  },
-  {
-    rows: 1,
-    cols: 1,
-  },
-  {
-    rows: 2,
-    cols: 2,
-  },
-  {
-    rows: 1,
-    cols: 2,
-  },
+  { rows: 2, cols: 2 },
+  { rows: 1, cols: 1 },
+  { rows: 1, cols: 1 },
+  { rows: 1, cols: 2 },
+  { rows: 1, cols: 1 },
+  { rows: 1, cols: 1 },
+  { rows: 2, cols: 2 },
+  { rows: 1, cols: 2 },
 ];
