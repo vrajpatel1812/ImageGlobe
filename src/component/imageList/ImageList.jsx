@@ -6,6 +6,10 @@ import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-fullscreen.css";
 import lgZoom from "lightgallery/plugins/zoom";
 import lgFullscreen from "lightgallery/plugins/fullscreen";
+import { Avatar, Tooltip, Typography } from "@mui/material";
+import moment from "moment";
+import profile from "../../../public/avatar.jpg";
+import Options from "./Options";
 
 const srcset = (image, size, rows = 1, cols = 1) => {
   return {
@@ -36,8 +40,13 @@ export default function ImageLists() {
               sx={{
                 overflow: "hidden",
                 display: "block",
+                opacity: 0.7,
+                transition: "opacity 0.3s linear",
+                cursor: "pointer",
+                "&:hover": { opacity: 1 },
               }}
             >
+              <Options />
               <LightGallery
                 speed={500}
                 plugins={[lgZoom, lgFullscreen]}
@@ -59,6 +68,27 @@ export default function ImageLists() {
                   />
                 </a>
               </LightGallery>
+              <Typography
+                variant="body2"
+                component="span"
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  color: "white ",
+                  background: "rgba(0,0,0,.3)",
+                  p: "5px",
+                  borderTopRightRadius: 8,
+                }}
+              >
+                {moment(new Date() - 500 * 60 * 60).fromNow()}
+              </Typography>
+              <Tooltip
+                title="User Name"
+                sx={{ position: "absolute", bottom: "3px", right: "3px" }}
+              >
+                <Avatar src={profile} slotProps={{ "aria-hidden": true }} />
+              </Tooltip>
             </ImageListItem>
           );
         })}
