@@ -7,9 +7,9 @@ import "lightgallery/css/lg-fullscreen.css";
 import lgZoom from "lightgallery/plugins/zoom";
 import lgFullscreen from "lightgallery/plugins/fullscreen";
 import { Avatar, Tooltip, Typography } from "@mui/material";
-import moment from "moment";
-import profile from "../../../public/avatar.jpg";
+import { DateTime } from "luxon";
 import Options from "./Options";
+import useFireStore from "../../firebase/useFireStore";
 
 const srcset = (image, size, rows = 1, cols = 1) => {
   return {
@@ -21,6 +21,8 @@ const srcset = (image, size, rows = 1, cols = 1) => {
 };
 
 export default function ImageLists() {
+  const { documents } = useFireStore("gallery");
+
   return (
     <div style={{ width: "100%", margin: "0 auto" }}>
       <ImageList
@@ -30,11 +32,11 @@ export default function ImageLists() {
         gap={2}
         sx={{ overflow: "hidden" }}
       >
-        {itemData.map((item, index) => {
+        {documents.map((item, index) => {
           const { rows, cols } = pattern[index % pattern.length];
           return (
             <ImageListItem
-              key={item.img}
+              key={item?.id}
               cols={cols}
               rows={rows}
               sx={{
@@ -46,7 +48,7 @@ export default function ImageLists() {
                 "&:hover": { opacity: 1 },
               }}
             >
-              <Options />
+              <Options imageId={item?.id} />
               <LightGallery
                 speed={500}
                 plugins={[lgZoom, lgFullscreen]}
@@ -54,10 +56,15 @@ export default function ImageLists() {
                 counter={false}
                 pager={false}
               >
-                <a href={item.img} data-sub-html={`<h4>${item.title}</h4>`}>
+                <a
+                  href={item?.data?.imageURL}
+                  data-sub-html={`<h4>${
+                    item?.data?.uName || item?.data?.uEmail
+                  }</h4>`}
+                >
                   <img
-                    {...srcset(item.img, 200, rows, cols)}
-                    alt={item.title}
+                    {...srcset(item?.data?.imageURL, 200, rows, cols)}
+                    alt={item?.data?.uName || item?.data?.uEmail}
                     loading="lazy"
                     style={{
                       width: "100%",
@@ -81,13 +88,18 @@ export default function ImageLists() {
                   borderTopRightRadius: 8,
                 }}
               >
-                {moment(new Date() - 500 * 60 * 60).fromNow()}
+                {DateTime.fromJSDate(
+                  item?.data?.timestamp?.toDate()
+                ).toRelative()}
               </Typography>
               <Tooltip
-                title="User Name"
+                title={item?.data?.uName || item?.data?.uEmail}
                 sx={{ position: "absolute", bottom: "3px", right: "3px" }}
               >
-                <Avatar src={profile} slotProps={{ "aria-hidden": true }} />
+                <Avatar
+                  src={item?.data?.uPhoto}
+                  slotProps={{ "aria-hidden": true }}
+                />
               </Tooltip>
             </ImageListItem>
           );
@@ -96,57 +108,6 @@ export default function ImageLists() {
     </div>
   );
 }
-
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-    title: "Hats",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-    title: "Honey",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-    title: "Basketball",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-    title: "Fern",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-    title: "Mushrooms",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-    title: "Tomato basil",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-    title: "Sea star",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-    title: "Bike",
-  },
-];
 
 const pattern = [
   { rows: 2, cols: 2 },
