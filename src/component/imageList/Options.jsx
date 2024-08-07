@@ -6,9 +6,13 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { Fragment, useState } from "react";
 import { Delete, MoreVert } from "@mui/icons-material";
+import PropTypes from "prop-types";
+import deleteDocument from "../../firebase/deleteDocument";
+import deleteFile from "../../firebase/deleteFile";
 
-const Options = () => {
+const Options = ({ imageId }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const currentUser = { uid: "userId" };
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -17,6 +21,16 @@ const Options = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleDelete = async () => {
+    try {
+      await deleteDocument("gallery", imageId);
+      await deleteFile(`gallery/${currentUser.uid}/${imageId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -71,7 +85,7 @@ const Options = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
+        <MenuItem onClick={handleDelete}>
           <ListItemIcon>
             <Delete />
           </ListItemIcon>
@@ -81,5 +95,7 @@ const Options = () => {
     </Fragment>
   );
 };
+
+Options.propTypes = { imageId: PropTypes.string };
 
 export default Options;
