@@ -9,10 +9,11 @@ import { Delete, MoreVert } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import deleteDocument from "../../firebase/deleteDocument";
 import deleteFile from "../../firebase/deleteFile";
+import { useAuth } from "../context/AuthContext";
 
 const Options = ({ imageId }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const currentUser = { uid: "userId" };
+  const { currentUser, setAlert } = useAuth();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,7 +28,13 @@ const Options = ({ imageId }) => {
       await deleteDocument("gallery", imageId);
       await deleteFile(`gallery/${currentUser.uid}/${imageId}`);
     } catch (error) {
-      console.log(error);
+      setAlert({
+        isAlert: true,
+        severity: "error",
+        message: error.message,
+        timeout: 8000,
+        location: "main",
+      });
     }
   };
 

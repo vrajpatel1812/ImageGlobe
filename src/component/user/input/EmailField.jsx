@@ -19,7 +19,7 @@ const EmailField = ({ emailRef, defaultValue = "" }) => {
 };
 
 EmailField.propTypes = {
-  emailRef: PropTypes.string,
+  emailRef: PropTypes.object,
   defaultValue: PropTypes.string,
 };
 

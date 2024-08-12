@@ -57,7 +57,9 @@ export default function ImageLists() {
                       ref={ref}
                       onClick={open}
                       {...srcset(item?.data?.imageURL, 200, rows, cols)}
-                      alt={item?.data?.uName || item?.data?.uEmail}
+                      alt={
+                        item?.data?.uName || item?.data?.uEmail?.split("@")[0]
+                      }
                       loading="lazy"
                       style={{
                         width: "100%",
@@ -86,7 +88,7 @@ export default function ImageLists() {
                   ).toRelative()}
                 </Typography>
                 <Tooltip
-                  title={item?.data?.uName || item?.data?.uEmail}
+                  title={item?.data?.uName || item?.data?.uEmail?.split("@")[0]}
                   sx={{ position: "absolute", bottom: "3px", right: "3px" }}
                 >
                   <Avatar

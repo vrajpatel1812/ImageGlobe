@@ -16,7 +16,7 @@ import Login from "./user/Login";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { currentUser, setModel } = useAuth();
+  const { currentUser, setModel, logout, setAlert } = useAuth();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -29,6 +29,21 @@ const Nav = () => {
   const openLogin = () => {
     setModel({ isOpen: true, title: "Login", content: <Login /> });
   };
+
+  const handleLogOut = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      setAlert({
+        isAlert: true,
+        severity: "error",
+        message: error.message,
+        timeout: 8000,
+        location: "main",
+      });
+    }
+  };
+
   return (
     <Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -93,17 +108,17 @@ const Nav = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+        <MenuItem>
+          <Avatar src={currentUser?.photoURL} /> Profile
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogOut}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

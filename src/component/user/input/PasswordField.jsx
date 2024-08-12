@@ -48,7 +48,7 @@ const PasswordField = ({
 };
 
 PasswordField.propTypes = {
-  passwordRef: PropTypes.string,
+  passwordRef: PropTypes.object,
   label: PropTypes.string,
   id: PropTypes.string,
 };

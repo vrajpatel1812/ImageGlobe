@@ -1,7 +1,9 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
 import PropTypes from "prop-types";
@@ -23,6 +25,14 @@ const AuthContext = ({ children }) => {
     title: "",
     content: "",
   });
+  const [alert, setAlert] = useState({
+    isAlert: false,
+    severity: "info",
+    message: "",
+    timeout: null,
+    location: "",
+  });
+  const [loading, setLoading] = useState(false);
 
   const signUp = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -34,6 +44,11 @@ const AuthContext = ({ children }) => {
 
   const logout = () => {
     return signOut(auth);
+  };
+
+  const loginWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
   };
 
   useEffect(() => {
@@ -52,6 +67,11 @@ const AuthContext = ({ children }) => {
     login,
     model,
     setModel,
+    loginWithGoogle,
+    alert,
+    setAlert,
+    loading,
+    setLoading,
   };
 
   return <authContext.Provider {...{ value }}>{children}</authContext.Provider>;

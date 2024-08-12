@@ -17,7 +17,15 @@ const Login = () => {
   const conformPasswordRef = useRef();
 
   const [isRegister, setIsRegister] = useState(false);
-  const { model, setModel, signUp, login } = useAuth();
+  const {
+    model,
+    setModel,
+    signUp,
+    login,
+    loginWithGoogle,
+    setAlert,
+    setLoading,
+  } = useAuth();
 
   useEffect(() => {
     if (isRegister) {
@@ -30,6 +38,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
@@ -44,17 +53,45 @@ const Login = () => {
         await signUp(email, password);
         setModel({ ...model, isOpen: false });
       } catch (error) {
-        alert(error.message);
-        console.log(error);
+        setAlert({
+          isAlert: true,
+          severity: "error",
+          message: error.message,
+          timeout: 5000,
+          location: "model",
+        });
       }
     } else {
       try {
         await login(email, password);
         setModel({ ...model, isOpen: false });
       } catch (error) {
-        alert(error.message);
+        setAlert({
+          isAlert: true,
+          severity: "error",
+          message: error.message,
+          timeout: 5000,
+          location: "model",
+        });
         console.log(error);
       }
+    }
+    setLoading(true);
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      setModel({ ...model, isOpen: false });
+    } catch (error) {
+      setAlert({
+        isAlert: true,
+        severity: "error",
+        message: error.message,
+        timeout: 5000,
+        location: "model",
+      });
+      console.log(error);
     }
   };
 
@@ -94,7 +131,11 @@ const Login = () => {
       </DialogActions>
 
       <DialogActions sx={{ justifyContent: "center", py: "24px" }}>
-        <Button variant="outlined" startIcon={<Google />}>
+        <Button
+          variant="outlined"
+          startIcon={<Google />}
+          onClick={handleGoogleLogin}
+        >
           Login with Google
         </Button>
       </DialogActions>

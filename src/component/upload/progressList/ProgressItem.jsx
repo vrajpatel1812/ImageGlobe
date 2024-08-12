@@ -6,11 +6,12 @@ import PropTypes from "prop-types";
 import { v4 as uuidv4 } from "uuid";
 import uploadFileProgress from "../../../firebase/uploadFileProgress";
 import addDocument from "../../../firebase/addDocument";
+import { useAuth } from "../../context/AuthContext";
 
 const ProgressItem = ({ file }) => {
   const [progress, setProgress] = useState(100);
   const [imageURL, setImageURL] = useState(null);
-  const currentUser = { uid: "userId" };
+  const { currentUser, setAlert } = useAuth();
 
   useEffect(() => {
     const uploadImage = async () => {
@@ -18,25 +19,30 @@ const ProgressItem = ({ file }) => {
       try {
         const url = await uploadFileProgress(
           file,
-          `gallery/${currentUser.uid}`,
+          `gallery/${currentUser?.uid}`,
           imageName,
           setProgress
         );
 
         const galleryDoc = {
           imageURL: url,
-          uid: currentUser.uid,
-          uEmail: "test@test.com",
-          uName: "john",
-          uPhoto: "",
+          uid: currentUser?.uid || "",
+          uEmail: currentUser?.email || "",
+          uName: currentUser?.displayName || "",
+          uPhoto: currentUser?.photoURL || "",
         };
 
         await addDocument("gallery", galleryDoc, imageName);
         console.log(url);
         setImageURL(null);
       } catch (error) {
-        alert(error.message);
-        console.log(error);
+        setAlert({
+          isAlert: true,
+          severity: "error",
+          message: error.message,
+          timeout: 8000,
+          location: "main",
+        });
       }
     };
 
