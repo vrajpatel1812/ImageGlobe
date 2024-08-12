@@ -76,7 +76,7 @@ const Login = () => {
         console.log(error);
       }
     }
-    setLoading(true);
+    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
