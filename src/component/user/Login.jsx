@@ -1,0 +1,105 @@
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@mui/material";
+import EmailField from "./input/EmailField";
+import { useEffect, useRef, useState } from "react";
+import PasswordField from "./input/PasswordField";
+import SubmitButton from "./input/SubmitButton";
+import { Google } from "@mui/icons-material";
+import { useAuth } from "../context/AuthContext";
+
+const Login = () => {
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const conformPasswordRef = useRef();
+
+  const [isRegister, setIsRegister] = useState(false);
+  const { model, setModel, signUp, login } = useAuth();
+
+  useEffect(() => {
+    if (isRegister) {
+      setModel({ ...model, title: "Register" });
+    } else {
+      setModel({ ...model, title: "Login" });
+    }
+  }, [isRegister]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+
+    if (isRegister) {
+      try {
+        const conformPassword = conformPasswordRef.current.value;
+
+        if (conformPassword !== password) {
+          throw new Error("Password don't match");
+        }
+
+        await signUp(email, password);
+        setModel({ ...model, isOpen: false });
+      } catch (error) {
+        alert(error.message);
+        console.log(error);
+      }
+    } else {
+      try {
+        await login(email, password);
+        setModel({ ...model, isOpen: false });
+      } catch (error) {
+        alert(error.message);
+        console.log(error);
+      }
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <DialogContent dividers>
+          <DialogContentText>
+            Please enter your email and password here:
+          </DialogContentText>
+          <EmailField {...{ emailRef }} />
+          <PasswordField {...{ passwordRef }} />
+          {isRegister && (
+            <PasswordField
+              {...{
+                passwordRef: conformPasswordRef,
+                label: "Conform Password",
+                id: "conformPassword",
+              }}
+            />
+          )}
+        </DialogContent>
+
+        <DialogActions sx={{ justifyContent: "space-between", px: "19px" }}>
+          <Button size="small">Forgot Password</Button>
+          <SubmitButton />
+        </DialogActions>
+      </form>
+
+      <DialogActions sx={{ justifyContent: "left", p: "5px 24px" }}>
+        {isRegister
+          ? "Do you have an account? Sign In now"
+          : "Don't you have account? create one now "}
+        <Button onClick={() => setIsRegister(!isRegister)}>
+          {isRegister ? "Login" : "Register"}
+        </Button>
+      </DialogActions>
+
+      <DialogActions sx={{ justifyContent: "center", py: "24px" }}>
+        <Button variant="outlined" startIcon={<Google />}>
+          Login with Google
+        </Button>
+      </DialogActions>
+    </>
+  );
+};
+
+export default Login;

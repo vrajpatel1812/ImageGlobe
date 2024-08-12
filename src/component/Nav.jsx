@@ -11,14 +11,12 @@ import Logout from "@mui/icons-material/Logout";
 import { Fragment, useState } from "react";
 import { Button } from "@mui/material";
 import { Lock } from "@mui/icons-material";
+import { useAuth } from "./context/AuthContext";
+import Login from "./user/Login";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentUser, setCurrentUser] = useState({
-    email: "test@gmail.com",
-    displayName: "John",
-    photoURL: "",
-  });
+  const { currentUser, setModel } = useAuth();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,11 +25,17 @@ const Nav = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const openLogin = () => {
+    setModel({ isOpen: true, title: "Login", content: <Login /> });
+  };
   return (
     <Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         {!currentUser ? (
-          <Button startIcon={<Lock />}>Login</Button>
+          <Button startIcon={<Lock />} onClick={openLogin}>
+            Login
+          </Button>
         ) : (
           <Tooltip title="Account settings">
             <IconButton
