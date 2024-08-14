@@ -13,6 +13,7 @@ import { Button } from "@mui/material";
 import { Lock } from "@mui/icons-material";
 import { useAuth } from "./context/AuthContext";
 import Login from "./user/Login";
+import Profile from "./user/Profile";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -108,7 +109,15 @@ const Nav = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem>
+        <MenuItem
+          onClick={() =>
+            setModel({
+              isOpen: true,
+              title: "Update Profile",
+              content: <Profile />,
+            })
+          }
+        >
           <Avatar src={currentUser?.photoURL} /> Profile
         </MenuItem>
         <Divider />
