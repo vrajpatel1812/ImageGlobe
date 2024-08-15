@@ -6,7 +6,6 @@ import { Avatar, Tooltip, Typography } from "@mui/material";
 import { DateTime } from "luxon";
 import Options from "./Options";
 import useFireStore from "../../firebase/useFireStore";
-import { useAuth } from "../context/AuthContext";
 
 const srcset = (image, size, rows = 1, cols = 1) => {
   return {
@@ -18,7 +17,6 @@ const srcset = (image, size, rows = 1, cols = 1) => {
 };
 
 export default function ImageLists() {
-  const { currentUser } = useAuth();
   const { documents } = useFireStore("gallery");
 
   return (
@@ -47,9 +45,12 @@ export default function ImageLists() {
                   "&:hover": { opacity: 1 },
                 }}
               >
-                {currentUser?.uid === item?.data?.uid && (
-                  <Options imageId={item?.id} />
-                )}
+                <Options
+                  imageId={item?.id}
+                  uid={item?.data?.uid}
+                  imageURL={item?.data?.imageURL}
+                />
+
                 <Item
                   original={item?.data?.imageURL}
                   thumbnail={item?.data?.imageURL}
