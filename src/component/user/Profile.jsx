@@ -1,33 +1,47 @@
 import {
   Avatar,
+  Box,
   DialogActions,
   DialogContent,
   DialogContentText,
+  IconButton,
   TextField,
 } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubmitButton from "./input/SubmitButton";
 import { v4 as uuidv4 } from "uuid";
 import uploadFile from "../../firebase/uploadFile";
 import { updateProfile } from "firebase/auth";
 import deleteFile from "../../firebase/deleteFile";
 import updateUserRecords from "../../firebase/updateUserRecords";
+import CropEasy from "../crop/CropEasy";
+import { Crop } from "@mui/icons-material";
 
 const Profile = () => {
-  const { currentUser, setLoading, setAlert } = useAuth();
+  const { currentUser, setLoading, setAlert, model, setModel } = useAuth();
   const [name, setName] = useState(currentUser?.displayName);
   const [file, setFile] = useState(null);
   const [photoURL, setPhotoURL] = useState(currentUser?.photoURL);
-  console.log(currentUser);
-  const isPasswordProvider =
-    currentUser?.providerData[0].providerId === "password";
+  const [openCrop, setOpenCrop] = useState(false);
+
+  // const isPasswordProvider =
+  // currentUser?.providerData[0].providerId === "password";
+
+  useEffect(() => {
+    if (openCrop) {
+      setModel({ ...model, title: "Crop Profile Photo" });
+    } else {
+      setModel({ ...model, title: "Update Profile" });
+    }
+  }, [openCrop]);
 
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFile(file);
       setPhotoURL(URL.createObjectURL(file));
+      setOpenCrop(true);
     }
   };
 
@@ -86,7 +100,7 @@ const Profile = () => {
     setLoading(false);
   };
 
-  return (
+  return !openCrop ? (
     <form onSubmit={handleSubmit}>
       <DialogContent dividers>
         <DialogContentText>
@@ -105,7 +119,7 @@ const Profile = () => {
           onChange={(e) => setName(e.target.value)}
         />
 
-        {isPasswordProvider && (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <label htmlFor="profilePhoto">
             <input
               accept="image/*"
@@ -119,12 +133,24 @@ const Profile = () => {
               sx={{ width: 75, height: 75, cursor: "pointer" }}
             />
           </label>
-        )}
+
+          {file && (
+            <IconButton
+              aria-label="Crop"
+              color="primary"
+              onClick={() => setOpenCrop(true)}
+            >
+              <Crop />
+            </IconButton>
+          )}
+        </Box>
       </DialogContent>
       <DialogActions>
         <SubmitButton />
       </DialogActions>
     </form>
+  ) : (
+    <CropEasy {...{ photoURL, setOpenCrop, setPhotoURL, setFile }} />
   );
 };
 
