@@ -19,6 +19,9 @@ const Profile = () => {
   const [name, setName] = useState(currentUser?.displayName);
   const [file, setFile] = useState(null);
   const [photoURL, setPhotoURL] = useState(currentUser?.photoURL);
+  console.log(currentUser);
+  const isPasswordProvider =
+    currentUser?.providerData[0].providerId === "password";
 
   const handleChange = (e) => {
     const file = e.target.files[0];
@@ -102,19 +105,21 @@ const Profile = () => {
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label htmlFor="profilePhoto">
-          <input
-            accept="image/*"
-            id="profilePhoto"
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleChange}
-          />
-          <Avatar
-            src={photoURL}
-            sx={{ width: 75, height: 75, cursor: "pointer" }}
-          />
-        </label>
+        {isPasswordProvider && (
+          <label htmlFor="profilePhoto">
+            <input
+              accept="image/*"
+              id="profilePhoto"
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleChange}
+            />
+            <Avatar
+              src={photoURL}
+              sx={{ width: 75, height: 75, cursor: "pointer" }}
+            />
+          </label>
+        )}
       </DialogContent>
       <DialogActions>
         <SubmitButton />
