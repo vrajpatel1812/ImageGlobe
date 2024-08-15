@@ -3,10 +3,17 @@ import PropTypes from "prop-types";
 import { Add } from "@mui/icons-material";
 import { Fab, Input } from "@mui/material";
 import { useRef } from "react";
+import { useAuth } from "../context/AuthContext";
+import Login from "../user/Login";
 
 const Form = ({ setFiles }) => {
+  const { currentUser, setModel } = useAuth();
+
   const fileRef = useRef();
   const handleClick = () => {
+    if (!currentUser) {
+      return setModel({ isOpen: true, title: "Login", content: <Login /> });
+    }
     fileRef.current.click();
   };
 
