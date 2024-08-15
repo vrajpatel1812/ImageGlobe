@@ -14,6 +14,7 @@ import { Lock } from "@mui/icons-material";
 import { useAuth } from "./context/AuthContext";
 import Login from "./user/Login";
 import Profile from "./user/Profile";
+import AccountSettings from "./user/settings/AccountSettings";
 
 const Nav = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -121,7 +122,15 @@ const Nav = () => {
           <Avatar src={currentUser?.photoURL} /> Profile
         </MenuItem>
         <Divider />
-        <MenuItem>
+        <MenuItem
+          onClick={() =>
+            setModel({
+              isOpen: true,
+              title: "Change settings",
+              content: <AccountSettings />,
+            })
+          }
+        >
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
