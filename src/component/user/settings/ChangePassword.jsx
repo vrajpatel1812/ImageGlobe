@@ -21,7 +21,7 @@ const ChangePassword = () => {
       }
 
       await updatePassword(currentUser, passwordRef.current.value);
-      
+
       setModel({ ...model, isOpen: false });
       setAlert({
         isAlert: true,
@@ -55,6 +55,7 @@ const ChangePassword = () => {
             passwordRef: confirmPasswordRef,
             id: "confirmPassword",
             label: "Confirm Password",
+            autoFocus: false,
           }}
         />
       </DialogContent>

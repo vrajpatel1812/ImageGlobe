@@ -6,6 +6,7 @@ import AuthContext from "./component/context/AuthContext";
 import Model from "./component/Model";
 import MainNotification from "./component/MainNotification";
 import Loading from "./component/Loading";
+import Verify from "./component/user/Verify";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <AuthContext>
         <Loading />
         <Model />
+        <Verify />
         <MainNotification />
         <Nav />
         <Upload />

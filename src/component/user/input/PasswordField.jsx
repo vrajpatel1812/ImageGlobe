@@ -7,6 +7,7 @@ const PasswordField = ({
   passwordRef,
   label = "password",
   id = "password",
+  autoFocus = true,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -20,7 +21,7 @@ const PasswordField = ({
 
   return (
     <TextField
-      autoFocus
+      autoFocus={autoFocus}
       margin="normal"
       variant="standard"
       id={id}
@@ -51,6 +52,7 @@ PasswordField.propTypes = {
   passwordRef: PropTypes.object,
   label: PropTypes.string,
   id: PropTypes.string,
+  autoFocus: PropTypes.bool,
 };
 
 export default PasswordField;
